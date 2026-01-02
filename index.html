@@ -609,6 +609,17 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="base-url">
+                        <i class="fas fa-link"></i>
+                        Base URL (Domain)
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-globe"></i>
+                        <input type="text" id="base-url" placeholder="https://utmlinks.netlify.app" value="https://utmlinks.netlify.app">
+                    </div>
+                </div>
+                
+                <div class="form-group">
                     <label for="source">
                         <i class="fas fa-globe"></i>
                         UTM Source (Platform)
@@ -748,24 +759,45 @@
     </div>
     
     <script>
-        const baseUrl = 'https://flightcounterapp.netlify.app';
+        // Get base URL from input or use default
+        function getBaseUrl() {
+            const input = document.getElementById('base-url');
+            let url = input.value.trim();
+            
+            // Remove trailing slash if present
+            url = url.replace(/\/+$/, '');
+            
+            // Add https:// if no protocol is specified
+            if (url && !url.match(/^https?:\/\//)) {
+                url = 'https://' + url;
+            }
+            
+            // Return default if empty
+            return url || 'https://utmlinks.netlify.app';
+        }
         
-        // Preset URLs (hidden, for copying)
-        const presetUrls = {
-            'preset-instagram-bio': `${baseUrl}?utm_source=instagram&utm_medium=social&utm_campaign=bio_link`,
-            'preset-tiktok-video': `${baseUrl}?utm_source=tiktok&utm_medium=social&utm_campaign=video_jan2026`,
-            'preset-linkedin-post': `${baseUrl}?utm_source=linkedin&utm_medium=social&utm_campaign=post_jan2026`,
-            'preset-facebook-post': `${baseUrl}?utm_source=facebook&utm_medium=social&utm_campaign=post_jan2026`,
-            'preset-youtube-video': `${baseUrl}?utm_source=youtube&utm_medium=social&utm_campaign=video_jan2026`,
-            'preset-reddit-post': `${baseUrl}?utm_source=reddit&utm_medium=social&utm_campaign=post_jan2026`,
-            'preset-twitter-tweet': `${baseUrl}?utm_source=twitter&utm_medium=social&utm_campaign=tweet_jan2026`,
-            'preset-pinterest-pin': `${baseUrl}?utm_source=pinterest&utm_medium=social&utm_campaign=pin_jan2026`
-        };
+        // Preset URLs (hidden, for copying) - will be updated dynamically
+        let presetUrls = {};
+        
+        function updatePresetUrls() {
+            const baseUrl = getBaseUrl();
+            presetUrls = {
+                'preset-instagram-bio': `${baseUrl}?utm_source=instagram&utm_medium=social&utm_campaign=bio_link`,
+                'preset-tiktok-video': `${baseUrl}?utm_source=tiktok&utm_medium=social&utm_campaign=video_jan2026`,
+                'preset-linkedin-post': `${baseUrl}?utm_source=linkedin&utm_medium=social&utm_campaign=post_jan2026`,
+                'preset-facebook-post': `${baseUrl}?utm_source=facebook&utm_medium=social&utm_campaign=post_jan2026`,
+                'preset-youtube-video': `${baseUrl}?utm_source=youtube&utm_medium=social&utm_campaign=video_jan2026`,
+                'preset-reddit-post': `${baseUrl}?utm_source=reddit&utm_medium=social&utm_campaign=post_jan2026`,
+                'preset-twitter-tweet': `${baseUrl}?utm_source=twitter&utm_medium=social&utm_campaign=tweet_jan2026`,
+                'preset-pinterest-pin': `${baseUrl}?utm_source=pinterest&utm_medium=social&utm_campaign=pin_jan2026`
+            };
+        }
         
         function generateUrl() {
             const source = document.getElementById('source').value;
             const medium = document.getElementById('medium').value;
             const campaign = document.getElementById('campaign').value.trim();
+            const baseUrl = getBaseUrl();
             
             let url;
             if (source === 'direct') {
@@ -883,6 +915,10 @@
         }
         
         // Generate URL on any change
+        document.getElementById('base-url').addEventListener('input', function() {
+            updatePresetUrls();
+            generateUrl();
+        });
         document.getElementById('source').addEventListener('change', function() {
             updateSourceIcon();
             generateUrl();
@@ -891,9 +927,9 @@
         document.getElementById('campaign').addEventListener('input', generateUrl);
         
         // Initialize
+        updatePresetUrls();
         updateSourceIcon();
         generateUrl();
     </script>
 </body>
 </html>
-
