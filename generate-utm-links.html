@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seyi's UTM Generator | FlightCounter</title>
+    <!-- Font Awesome 6.5.1 - Primary CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+    <!-- Font Awesome Fallback -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.1/css/all.css" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://use.fontawesome.com">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #155DFC;
+            --primary-dark: #0e4bc7;
+            --secondary: #667eea;
+            --accent: #764ba2;
+            --success: #10b981;
+            --text-dark: #1a202c;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        /* Floating background elements */
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+        
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            min-height: 100vh;
+        }
+        
+        .content-wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            background: white;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .image-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 65%;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .image-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(21, 93, 252, 0.85) 0%, rgba(102, 126, 234, 0.85) 100%);
+            z-index: 1;
+        }
+        
+        .image-section img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+        
+        .image-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            max-width: 500px;
+        }
+        
+        .icon-wrapper {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .icon-wrapper i {
+            font-size: 60px;
+            color: white;
+        }
+        
+        .image-content h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .image-content p {
+            font-size: 18px;
+            opacity: 0.95;
+            line-height: 1.6;
+            max-width: 400px;
+        }
+        
+        .features {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s;
+        }
+        
+        .feature-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .feature-item i {
+            font-size: 20px;
+        }
+        
+        .form-section {
+            margin-left: 65%;
+            width: 35%;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .header {
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: var(--text-light);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .form-group label i {
+            color: #9ca3af;
+            font-size: 16px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper > i:first-of-type {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 18px;
+            z-index: 1;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            color: var(--text-dark);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+        
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 12px;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(21, 93, 252, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        select:hover, input:hover {
+            border-color: var(--primary);
+        }
+        
+        .result {
+            margin-top: 32px;
+            padding: 24px;
+            background: var(--bg-light);
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            animation: fadeIn 0.4s ease-out;
+            transition: all 0.3s ease;
+        }
+        
+        .result:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        
+        .result-label i {
+            color: var(--primary);
+        }
+        
+        .url-display {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            word-break: break-all;
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 13px;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+        
+        .url-display:hover {
+            background: #fafafa;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+        
+        .copy-btn.copied {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            animation: successPulse 0.5s ease-out;
+        }
+        
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .preset-links {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border);
+        }
+        
+        .preset-links h3 {
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .preset-links h3 i {
+            color: var(--primary);
+        }
+        
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .preset-item {
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .preset-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        
+        .preset-item strong {
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        
+        .preset-item strong i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        .preset-url {
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 11px;
+            color: var(--text-light);
+            word-break: break-all;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        
+        .preset-copy {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .preset-copy span {
+            display: inline-block;
+        }
+        
+        .preset-copy:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.02);
+        }
+        
+        .preset-copy.copied {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .image-section {
+                display: none;
+            }
+            
+            .form-section {
+                margin-left: 0;
+                width: 100%;
+                padding: 40px 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0;
+            }
+            
+            .content-wrapper {
+                border-radius: 0;
+            }
+            
+            .form-section {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .preset-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .form-section {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+        
+        /* Loading state */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    
+    <div class="container">
+        <div class="content-wrapper">
+            <!-- Image Section -->
+            <div class="image-section">
+                <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Professional marketer working on digital campaigns">
+                <div class="image-content">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h2>Seyi's UTM Generator</h2>
+                    <p>Create tracked links for your social media campaigns and see exactly where your signups are coming from.</p>
+                    
+                    <div class="features">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Track all platforms</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Measure campaign performance</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-rocket"></i>
+                            <span>One-click copy & paste</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Section -->
+            <div class="form-section">
+                <div class="header">
+                    <h1><i class="fas fa-magic"></i> Seyi's UTM Generator</h1>
+                    <p>Create tracked links for your social media campaigns and see exactly where your signups are coming from.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="source">
+                        <i class="fas fa-globe"></i>
+                        UTM Source (Platform)
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-network-wired" id="source-icon"></i>
+                        <select id="source">
+                            <option value="instagram" data-icon="fab fa-instagram">Instagram</option>
+                            <option value="tiktok" data-icon="fab fa-tiktok">TikTok</option>
+                            <option value="linkedin" data-icon="fab fa-linkedin">LinkedIn</option>
+                            <option value="facebook" data-icon="fab fa-facebook">Facebook</option>
+                            <option value="youtube" data-icon="fab fa-youtube">YouTube</option>
+                            <option value="reddit" data-icon="fab fa-reddit">Reddit</option>
+                            <option value="twitter" data-icon="fab fa-x-twitter">X (Twitter)</option>
+                            <option value="pinterest" data-icon="fab fa-pinterest">Pinterest</option>
+                            <option value="snapchat" data-icon="fab fa-snapchat">Snapchat</option>
+                            <option value="whatsapp" data-icon="fab fa-whatsapp">WhatsApp</option>
+                            <option value="telegram" data-icon="fab fa-telegram">Telegram</option>
+                            <option value="newsletter" data-icon="fas fa-envelope">Email Newsletter</option>
+                            <option value="direct" data-icon="fas fa-link">Direct/Unknown</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="medium">
+                        <i class="fas fa-broadcast-tower"></i>
+                        UTM Medium
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-signal"></i>
+                        <select id="medium">
+                            <option value="social">Social (for social media)</option>
+                            <option value="email">Email (for newsletters)</option>
+                            <option value="cpc">CPC (for paid ads)</option>
+                            <option value="organic">Organic (for search)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="campaign">
+                        <i class="fas fa-bullhorn"></i>
+                        UTM Campaign
+                    </label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-tag"></i>
+                        <input type="text" id="campaign" placeholder="e.g., post_jan2026, bio_link, launch_week" value="post_jan2026">
+                    </div>
+                </div>
+                
+                <div class="result" id="result" style="display: none;">
+                    <div class="result-label">
+                        <i class="fas fa-link"></i>
+                        Generated Link:
+                    </div>
+                    <div class="url-display" id="url-display"></div>
+                    <button class="copy-btn" id="copy-btn" onclick="copyToClipboard()">
+                        <i class="fas fa-copy"></i>
+                        <span>Copy Link</span>
+                    </button>
+                </div>
+                
+                <div class="preset-links">
+                    <h3>
+                        <i class="fas fa-bolt"></i>
+                        Quick Presets
+                    </h3>
+                    <div class="preset-grid">
+                        <div class="preset-item" onclick="usePreset('instagram', 'social', 'bio_link')">
+                            <strong><i class="fab fa-instagram"></i> Instagram Bio</strong>
+                            <div class="preset-url">bio_link campaign</div>
+                            <button class="preset-copy" onclick="event.stopPropagation(); copyPreset('preset-instagram-bio')">
+                                <i class="fas fa-copy"></i> <span>Copy</span>
+                            </button>
+                        </div>
+                        
+                        <div class="preset-item" onclick="usePreset('tiktok', 'social', 'video_jan2026')">
+                            <strong><i class="fab fa-tiktok"></i> TikTok Video</strong>
+                            <div class="preset-url">video_jan2026 campaign</div>
+                            <button class="preset-copy" onclick="event.stopPropagation(); copyPreset('preset-tiktok-video')">
+                                <i class="fas fa-copy"></i> <span>Copy</span>
+                            </button>
+                        </div>
+                        
+                        <div class="preset-item" onclick="usePreset('linkedin', 'social', 'post_jan2026')">
+                            <strong><i class="fab fa-linkedin"></i> LinkedIn Post</strong>
+                            <div class="preset-url">post_jan2026 campaign</div>
+                            <button class="preset-copy" onclick="event.stopPropagation(); copyPreset('preset-linkedin-post')">
+                                <i class="fas fa-copy"></i> <span>Copy</span>
+                            </button>
+                        </div>
+                        
+                        <div class="preset-item" onclick="usePreset('facebook', 'social', 'post_jan2026')">
+                            <strong><i class="fab fa-facebook"></i> Facebook Post</strong>
+                            <div class="preset-url">post_jan2026 campaign</div>
+                            <button class="preset-copy" onclick="event.stopPropagation(); copyPreset('preset-facebook-post')">
+                                <i class="fas fa-copy"></i> <span>Copy</span>
+                            </button>
+                        </div>
+                        
+                        <div class="preset-item" onclick="usePreset('youtube', 'social', 'video_jan2026')">
+                            <strong><i class="fab fa-youtube"></i> YouTube Video</strong>
+                            <div class="preset-url">video_jan2026 campaign</div>
+                            <button class="preset-copy" onclick="event.stopPropagation(); copyPreset('preset-youtube-video')">
+                                <i class="fas fa-copy"></i> <span>Copy</span>
+                            </button>
+                        </div>
+                        
+                        <div class="preset-item" onclick="usePreset('reddit', 'social', 'post_jan2026')">
+                            <strong><i class="fab fa-reddit"></i> Reddit Post</strong>
+                            <div class="preset-url">post_jan2026 campaign</div>
+                            <button class="preset-copy" onclick="event.stopPropagation(); copyPreset('preset-reddit-post')">
+                                <i class="fas fa-copy"></i> <span>Copy</span>
+                            </button>
+                        </div>
+                        
+                        <div class="preset-item" onclick="usePreset('twitter', 'social', 'tweet_jan2026')">
+                            <strong><i class="fab fa-x-twitter"></i> X (Twitter) Tweet</strong>
+                            <div class="preset-url">tweet_jan2026 campaign</div>
+                            <button class="preset-copy" onclick="event.stopPropagation(); copyPreset('preset-twitter-tweet')">
+                                <i class="fas fa-copy"></i> <span>Copy</span>
+                            </button>
+                        </div>
+                        
+                        <div class="preset-item" onclick="usePreset('pinterest', 'social', 'pin_jan2026')">
+                            <strong><i class="fab fa-pinterest"></i> Pinterest Pin</strong>
+                            <div class="preset-url">pin_jan2026 campaign</div>
+                            <button class="preset-copy" onclick="event.stopPropagation(); copyPreset('preset-pinterest-pin')">
+                                <i class="fas fa-copy"></i> <span>Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const baseUrl = 'https://flightcounterapp.netlify.app';
+        
+        // Preset URLs (hidden, for copying)
+        const presetUrls = {
+            'preset-instagram-bio': `${baseUrl}?utm_source=instagram&utm_medium=social&utm_campaign=bio_link`,
+            'preset-tiktok-video': `${baseUrl}?utm_source=tiktok&utm_medium=social&utm_campaign=video_jan2026`,
+            'preset-linkedin-post': `${baseUrl}?utm_source=linkedin&utm_medium=social&utm_campaign=post_jan2026`,
+            'preset-facebook-post': `${baseUrl}?utm_source=facebook&utm_medium=social&utm_campaign=post_jan2026`,
+            'preset-youtube-video': `${baseUrl}?utm_source=youtube&utm_medium=social&utm_campaign=video_jan2026`,
+            'preset-reddit-post': `${baseUrl}?utm_source=reddit&utm_medium=social&utm_campaign=post_jan2026`,
+            'preset-twitter-tweet': `${baseUrl}?utm_source=twitter&utm_medium=social&utm_campaign=tweet_jan2026`,
+            'preset-pinterest-pin': `${baseUrl}?utm_source=pinterest&utm_medium=social&utm_campaign=pin_jan2026`
+        };
+        
+        function generateUrl() {
+            const source = document.getElementById('source').value;
+            const medium = document.getElementById('medium').value;
+            const campaign = document.getElementById('campaign').value.trim();
+            
+            let url;
+            if (source === 'direct') {
+                url = baseUrl;
+            } else {
+                const params = new URLSearchParams({
+                    utm_source: source,
+                    utm_medium: medium,
+                    utm_campaign: campaign || 'campaign'
+                });
+                url = `${baseUrl}?${params.toString()}`;
+            }
+            
+            document.getElementById('url-display').textContent = url;
+            document.getElementById('result').style.display = 'block';
+        }
+        
+        function copyToClipboard() {
+            const url = document.getElementById('url-display').textContent;
+            const btn = document.getElementById('copy-btn');
+            const icon = btn.querySelector('i');
+            const text = btn.querySelector('span');
+            
+            navigator.clipboard.writeText(url).then(() => {
+                // Optimistic UI update
+                btn.classList.add('copied');
+                icon.className = 'fas fa-check';
+                text.textContent = 'Copied!';
+                
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    icon.className = 'fas fa-copy';
+                    text.textContent = 'Copy Link';
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                btn.classList.add('copied');
+                icon.className = 'fas fa-check';
+                text.textContent = 'Copied!';
+                
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    icon.className = 'fas fa-copy';
+                    text.textContent = 'Copy Link';
+                }, 2000);
+            });
+        }
+        
+        function copyPreset(id) {
+            const url = presetUrls[id];
+            const btn = event.target.closest('.preset-copy');
+            const span = btn.querySelector('span');
+            
+            navigator.clipboard.writeText(url).then(() => {
+                // Optimistic UI update
+                btn.classList.add('copied');
+                btn.querySelector('i').className = 'fas fa-check';
+                span.textContent = 'Copied!';
+                
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.querySelector('i').className = 'fas fa-copy';
+                    span.textContent = 'Copy';
+                }, 2000);
+            }).catch(() => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = url;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                btn.classList.add('copied');
+                btn.querySelector('i').className = 'fas fa-check';
+                span.textContent = 'Copied!';
+                
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.querySelector('i').className = 'fas fa-copy';
+                    span.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+        
+        function usePreset(source, medium, campaign) {
+            document.getElementById('source').value = source;
+            document.getElementById('medium').value = medium;
+            document.getElementById('campaign').value = campaign;
+            updateSourceIcon();
+            generateUrl();
+            
+            // Scroll to result
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Update select icon when source changes
+        function updateSourceIcon() {
+            const select = document.getElementById('source');
+            const iconElement = document.getElementById('source-icon');
+            const selectedOption = select.options[select.selectedIndex];
+            const iconClass = selectedOption.getAttribute('data-icon') || 'fas fa-network-wired';
+            iconElement.className = iconClass;
+        }
+        
+        // Generate URL on any change
+        document.getElementById('source').addEventListener('change', function() {
+            updateSourceIcon();
+            generateUrl();
+        });
+        document.getElementById('medium').addEventListener('change', generateUrl);
+        document.getElementById('campaign').addEventListener('input', generateUrl);
+        
+        // Initialize
+        updateSourceIcon();
+        generateUrl();
+    </script>
+</body>
+</html>
